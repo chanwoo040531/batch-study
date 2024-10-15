@@ -34,6 +34,18 @@ classDiagram
   Step -- ItemProcessor: 1
   Step -- ItemWriter: 1
 ```
+- Job: 배치 작업의 실행 단위
+- Step: 
+  - Job을 구성하는 단위 (job : step = 1 : N)
+  - Tasklet, Chunk 모델의 구현체 탑재되어 실행
+- JobLauncher: 
+  - Job을 실행하는 인터페이스
+  - 사용자에 의해 직접 실행됨
+- ItemReader: 데이터를 읽어오는 역할
+- ItemProcessor: 데이터를 가공하는 역할
+- ItemWriter: 데이터를 저장 및 수정하는 역할
+- Tasklet: 단순한 처리 모델
+- JobRepository: JobLauncher, Job, Step의 상태정보를 저장하는 저장소
 
 ### 스프링 배치 흐름
 ```mermaid
