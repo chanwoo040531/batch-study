@@ -3,7 +3,6 @@
 ## Chunk 모델
 - 처리할 데이터를 Chunk 단위로 나누어 처리하는 모델
 - ChunkBasedTasklet: Chunk 처리를 지원하는 클래스
-- Chunk Size는 
 
 ```mermaid
 sequenceDiagram
