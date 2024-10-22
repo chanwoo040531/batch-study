@@ -36,7 +36,7 @@ sequenceDiagram
 ## 실습
 
 환경
-- Java 21
+- Java 17
 - Spring Boot 3.3.4
 - Spring Batch 5.1.2
 - DB: PostgreSQL 17.0
