@@ -1,7 +1,11 @@
 spring:
   datasource:
     hikari.maximum-pool-size: 10
-    url: jdbc:h2:mem:testdb
-    driver-class-name: org.h2.Driver
-    username: sa
+    url: jdbc:postgresql://localhost:54532/batch?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    driver-class-name: org.postgresql.Driver
+    username: root
     password: password
+
+  batch:
+    jdbc:
+      initialize-schema: always
