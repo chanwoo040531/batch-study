@@ -39,7 +39,7 @@ import lombok.extern.slf4j.Slf4j;
 @Configuration
 @RequiredArgsConstructor
 public class BatchConfig {
-    private final static int CHUNK_SIZE = 100;
+    private final static int CHUNK_SIZE = 1000;
 
     @Bean
     public static BeanDefinitionRegistryPostProcessor jobRegistryBeanPostProcessorRemover() {
