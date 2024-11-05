@@ -3,7 +3,7 @@
 - Spring Boot 3.3.4
 - Spring Batch 5.1.2
 - DB: PostgreSQL 17.0
-- 데이터: 50만개
+- 데이터: 약 50만개
 
 ```mermaid
 xychart-beta
