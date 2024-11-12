@@ -17,4 +17,4 @@ spring:
       hibernate:
         default_schema: account
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: validate

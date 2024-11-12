@@ -22,3 +22,11 @@
 -- ;
 
 CREATE SCHEMA IF NOT EXISTS account;
+
+CREATE TABLE IF NOT EXISTS account.customers
+(
+    id     BIGSERIAL PRIMARY KEY,
+    age    INTEGER,
+    gender VARCHAR(255),
+    name   VARCHAR(255)
+);
