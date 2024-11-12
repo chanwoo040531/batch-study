@@ -1,0 +1,20 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:54532/batch?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    driver-class-name: org.postgresql.Driver
+    username: root
+    password: password
+    hikari:
+      maximum-pool-size: 10
+      auto-commit: false
+      connection-timeout: 30000
+
+  batch:
+    jdbc:
+      initialize-schema: always
+  jpa:
+    properties:
+      hibernate:
+        default_schema: account
+    hibernate:
+      ddl-auto: create-drop
