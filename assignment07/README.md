@@ -21,7 +21,7 @@ MyBatis를 사용하여 DB에서 Page 단위로 데이터를 읽어오는 Reader
 
 PagingItemReader를 사용할 때 **정렬 키**를 설정하지 않으면 각각의 Chunk가 각기다른 정렬 조건을 가지고 처리를 수행할 수 있음
 
-```postgresql
+```sql
 SELECT id, name, age, gender
 FROM account.customers
 ORDER BY id -- 정렬 키 설정
