@@ -9,7 +9,7 @@ services:
       POSTGRES_PASSWORD: password
       TZ: Asia/Seoul
     ports:
-      - "44532:5432"
+      - "54532:5432"
     volumes:
 #      - ./.var/lib/postgresql/data:/var/lib/postgresql/data
       - ./00_init.sql:/docker-entrypoint-initdb.d/00_init.sql

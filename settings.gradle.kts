@@ -1,8 +1,11 @@
 rootProject.name = "batch"
 
-include("assignment01")
-include("assignment02")
-include("assignment03")
-include("assignment04")
-include("assignment05")
-include("assignment06")
+include(
+    "assignment01",
+    "assignment02",
+    "assignment03",
+    "assignment04",
+    "assignment05",
+    "assignment06",
+    "assignment07",
+)

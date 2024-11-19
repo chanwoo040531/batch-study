@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="me.study.assignment07">
+  <select id="selectCustomers" resultType="me.study.assignment07.Customer">
+    SELECT id, name, age, gender
+    FROM account.customers
+    ORDER BY id
+    OFFSET #{_skiprows} LIMIT #{_pagesize}
+  </select>
+
+  <update id="updateCustomers" parameterType="me.study.assignment07.CustomerUpdate">
+    UPDATE account.customers
+    SET age = #{age}
+    WHERE id = #{id}
+  </update>
+</mapper>
