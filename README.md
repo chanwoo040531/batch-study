@@ -6,3 +6,5 @@
 - 3회차: [스프링 배치의 구현체](/assignment03/README.md)
 - 4회차: [FlatFile 처리](/assignment04/README.md)
 - 5회차: [JdbcPagingItemReader / JdbcBatchItemWriter](/assignment05/README.md)
+- 6회차: [JpaPagingItemReader / JpaItemWriter](/assignment06/README.md)
+- 7회차: [MyBatisItemReader / MyBatisItemWriter](/assignment07/README.md)
