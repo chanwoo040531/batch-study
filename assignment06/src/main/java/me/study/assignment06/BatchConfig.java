@@ -51,7 +51,7 @@ public class BatchConfig {
     @Bean
     public ItemProcessor<Customer, Customer> processor() {
         return (customer) -> {
-            log.debug(customer.getName());
+            log.info(customer.getName());
             return customer;
         };
     }

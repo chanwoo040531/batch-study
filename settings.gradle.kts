@@ -8,4 +8,5 @@ include(
     "assignment05",
     "assignment06",
     "assignment07",
+    "assignment08",
 )
