@@ -23,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class BatchConfig {
     private final static int CHUNK_SIZE = 10;
     private final DataSourceConfig.DataSourceRouter dataSourceRouter;
@@ -32,7 +31,6 @@ public class BatchConfig {
     public EntityManager entityManager;
 
     @Bean
-    @Transactional(readOnly = true,  propagation = Propagation.REQUIRES_NEW)
     public ItemReader<Customer> pagingItemReader(EntityManagerFactory entityManagerFactory) {
         return new QuerydslPagingItemReader<>(
                 "pagingItemReader",
@@ -50,7 +48,6 @@ public class BatchConfig {
     public ItemProcessor<Customer, Customer> processor() {
 
         return (customer) -> {
-            log.info(dataSourceRouter.determineCurrentLookupKey().toString());
             log.info(customer.getName());
             return customer;
         };
@@ -80,9 +77,28 @@ public class BatchConfig {
     }
 
     @Bean
-    public Job myJob(JobRepository jobRepository, Step step) {
+    public Step myStep2(
+            JobRepository jobRepository,
+            PlatformTransactionManager transactionManager,
+            ItemReader<Customer> reader,
+            ItemWriter<Customer> writer
+    ) {
+        return new StepBuilder("myJpaStep2", jobRepository)
+                .<Customer, Customer>chunk(CHUNK_SIZE, transactionManager)
+                .reader(reader)
+                .processor((item) -> {
+                    log.info(item.getName());
+                    return item;
+                })
+                .writer(writer)
+                .build();
+    }
+
+    @Bean
+    public Job myJob(JobRepository jobRepository, Step myStep, Step myStep2) {
         return new JobBuilder("myJpaJob", jobRepository)
-                .start(step)
+                .start(myStep)
+                .next(myStep2)
                 .build();
     }
 }

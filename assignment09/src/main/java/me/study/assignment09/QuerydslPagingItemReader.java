@@ -44,7 +44,8 @@ public class QuerydslPagingItemReader<T> extends AbstractPagingItemReader<T> {
     protected void doReadPage() {
         initQueryResult();
 
-        em.setFlushMode(FlushModeType.COMMIT);
+        em.flush();
+        em.clear();
 
         long offset = (!alwaysReadFromZero)
                 ? (long) getPage() * getPageSize()
@@ -57,7 +58,6 @@ public class QuerydslPagingItemReader<T> extends AbstractPagingItemReader<T> {
 
 
         List<T> queryResult = query.fetch();
-        logger.info(dataSourceRouter.determineCurrentLookupKey());
 
         for (T entity : queryResult) {
             em.detach(entity);

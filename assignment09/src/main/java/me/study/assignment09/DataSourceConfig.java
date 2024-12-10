@@ -33,10 +33,12 @@ public class DataSourceConfig {
     @Bean
     @ConfigurationProperties(prefix = "spring.datasource.standby")
     public DataSource standbyDataSource() {
-        return DataSourceBuilder
+        HikariDataSource dataSource = DataSourceBuilder
                 .create()
                 .type(HikariDataSource.class)
                 .build();
+        dataSource.setReadOnly(true);
+        return dataSource;
     }
 
     @Bean
