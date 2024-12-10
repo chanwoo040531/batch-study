@@ -1,15 +1,9 @@
-# 과제 8
+# 과제 9
 
-## CompositeItemProcessor
+## Custom Item Reader & Writer
+특이 케이스 및 특정 비즈니스 로직 처리를 위해 Custom Item Reader & Writer를 구현 가능
+### Reader
+ItemReader 혹은 AbstractPagingItemReader를 상속받아 구현
 
-### 주요 구성요소
-- delegates: ItemProcessor를 구현한 클래스들을 저장하는 리스트
-
-
-### 장단점
-
-| 장점               | 단점                    |
-|------------------|-----------------------|
-| - 단계별 처리 가능<br/> | - 설정 복잡성<br/> - 성능 저하 |
-
-
+### Writer
+ItemWriter를 상속받아 구현

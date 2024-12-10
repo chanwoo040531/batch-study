@@ -1,7 +1,10 @@
 package me.study.assignment09;
 
-import java.util.Collections;
-
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.PersistenceContext;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.job.builder.JobBuilder;
@@ -11,37 +14,43 @@ import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.builder.JpaItemWriterBuilder;
-import org.springframework.batch.item.database.builder.JpaPagingItemReaderBuilder;
-import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
-
-import jakarta.persistence.EntityManagerFactory;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class BatchConfig {
-    private final static int CHUNK_SIZE = 1000;
+    private final static int CHUNK_SIZE = 10;
+    private final DataSourceConfig.DataSourceRouter dataSourceRouter;
+
+    @PersistenceContext
+    public EntityManager entityManager;
 
     @Bean
+    @Transactional(readOnly = true,  propagation = Propagation.REQUIRES_NEW)
     public ItemReader<Customer> pagingItemReader(EntityManagerFactory entityManagerFactory) {
-        return new JpaPagingItemReaderBuilder<Customer>()
-                .name("jpaReader")
-                .queryString(
-                        "SELECT c FROM Customer c WHERE c.age > :age order by id desc")
-                .pageSize(CHUNK_SIZE)
-                .entityManagerFactory(entityManagerFactory)
-                .parameterValues(Collections.singletonMap("age", 20))
-                .build();
+        return new QuerydslPagingItemReader<>(
+                "pagingItemReader",
+                entityManager,
+                dataSourceRouter,
+                jpaQueryFactory -> jpaQueryFactory
+                        .selectFrom(QCustomer.customer)
+                        .orderBy(QCustomer.customer.id.asc()),
+                CHUNK_SIZE,
+                false
+        );
     }
 
     @Bean
     public ItemProcessor<Customer, Customer> processor() {
+
         return (customer) -> {
+            log.info(dataSourceRouter.determineCurrentLookupKey().toString());
             log.info(customer.getName());
             return customer;
         };
@@ -51,7 +60,6 @@ public class BatchConfig {
     public ItemWriter<Customer> writer(EntityManagerFactory entityManagerFactory) {
         return new JpaItemWriterBuilder<Customer>()
                 .entityManagerFactory(entityManagerFactory)
-                .usePersist(true)
                 .build();
     }
 

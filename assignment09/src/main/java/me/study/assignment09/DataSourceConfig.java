@@ -43,15 +43,15 @@ public class DataSourceConfig {
     @DependsOn({ "primaryDataSource", "standbyDataSource" })
     public DataSourceRouter datasourceRouter() {
         DataSource primaryDataSource = primaryDataSource();
-        DataSource replicaDataSource = standbyDataSource();
+        DataSource standbyDataSource = standbyDataSource();
 
         ConcurrentHashMap<Object, Object> targetDataSources = new ConcurrentHashMap<>();
         targetDataSources.put(DataSourceType.PRIMARY, primaryDataSource);
-        targetDataSources.put(DataSourceType.STANDBY, replicaDataSource);
+        targetDataSources.put(DataSourceType.STANDBY, standbyDataSource);
 
         DataSourceRouter dataSourceRouter = new DataSourceRouter();
         dataSourceRouter.setTargetDataSources(targetDataSources);
-        dataSourceRouter.setDefaultTargetDataSource(primaryDataSource);
+        dataSourceRouter.setDefaultTargetDataSource(standbyDataSource);
 
         return dataSourceRouter;
     }
@@ -67,7 +67,11 @@ public class DataSourceConfig {
 
         @Override
         protected Object determineCurrentLookupKey() {
-            return TransactionSynchronizationManager.isCurrentTransactionReadOnly() ? DataSourceType.STANDBY : DataSourceType.PRIMARY;
+            boolean readOnly = TransactionSynchronizationManager.isCurrentTransactionReadOnly();
+            if (readOnly) {
+                return DataSourceType.STANDBY;
+            }
+            return DataSourceType.PRIMARY;
         }
     }
 
