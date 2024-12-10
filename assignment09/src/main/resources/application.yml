@@ -1,0 +1,29 @@
+spring:
+  datasource:
+    primary:
+      jdbc-url: jdbc:postgresql://localhost:54532/batch?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+      username: postgres
+      password: password
+    standby:
+      jdbc-url: jdbc:postgresql://localhost:54533/batch?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+      username: postgres
+      password: password
+    hikari:
+      maximum-pool-size: 10
+      auto-commit: false
+      connection-timeout: 30000
+    driver-class-name: org.postgresql.Driver
+
+  batch:
+    jdbc:
+      initialize-schema: always
+
+  jpa:
+    properties:
+      hibernate:
+        default_schema: account
+    hibernate:
+      ddl-auto: validate
+  docker:
+    compose:
+      lifecycle-management: start_only

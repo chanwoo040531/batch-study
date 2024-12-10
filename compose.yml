@@ -1,30 +1,56 @@
-version: '3.1'
+version: '3.8'
+
+x-postgres-common:
+  &postgres-common
+  image: postgres:17-alpine
+  user: postgres
+  restart: always
+  healthcheck:
+    test: 'pg_isready -U postgres --dbname=batch'
+    interval: 10s
+    timeout: 5s
+    retries: 5
 
 services:
   db:
-    image: postgres:alpine
+    <<: *postgres-common
     environment:
       POSTGRES_DB: batch
-      POSTGRES_USER: root
+      POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
       TZ: Asia/Seoul
+      POSTGRES_HOST_AUTH_METHOD: "scram-sha-256\nhost replication all 0.0.0.0/0 md5"
+      POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256"
     ports:
       - "54532:5432"
+    command: |
+      postgres 
+      -c wal_level=replica 
+      -c hot_standby=on 
+      -c max_wal_senders=10 
+      -c max_replication_slots=10 
+      -c hot_standby_feedback=on
     volumes:
-#      - ./.var/lib/postgresql/data:/var/lib/postgresql/data
       - ./00_init.sql:/docker-entrypoint-initdb.d/00_init.sql
 
-#  storage:
-#    image: minio/minio:latest
-#    container_name: minio
-#    restart: always
-#    command: server /data --console-address ":9001"
-#    ports:
-#      - "9000:9000"
-#      - "9001:9001"
-#    environment:
-#      MINIO_ROOT_USER: minioadmin
-#      MINIO_ROOT_PASSWORD: minioadmin
-#
-#    volumes:
-#      - ./.blob/minio/data:/data
+  db-replica:
+    <<: *postgres-common
+    environment:
+      PGUSER: replicator
+      PGPASSWORD: replicator_password
+      TZ: Asia/Seoul
+    ports:
+      - "54533:5432"
+    command: |
+      bash -c "
+      until pg_basebackup --pgdata=/var/lib/postgresql/data -R --slot=replication_slot --host=db --port=5432
+      do
+      echo 'Waiting for primary to connect...'
+      sleep 1s
+      done
+      echo 'Backup done, starting replica...'
+      chmod 0700 /var/lib/postgresql/data
+      postgres
+      "
+    depends_on:
+      - db

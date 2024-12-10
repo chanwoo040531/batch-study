@@ -1,3 +1,6 @@
+CREATE USER replicator WITH REPLICATION ENCRYPTED PASSWORD 'replicator_password';
+SELECT pg_create_physical_replication_slot('replication_slot');
+
 -- CREATE SCHEMA IF NOT EXISTS coupon;
 --
 -- CREATE TABLE IF NOT EXISTS coupon.coupons

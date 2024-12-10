@@ -9,4 +9,5 @@ include(
     "assignment06",
     "assignment07",
     "assignment08",
+    "assignment09",
 )
